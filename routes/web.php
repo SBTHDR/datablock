@@ -21,5 +21,7 @@ Route::get('/dashboard', function () {
 require __DIR__.'/auth.php';
 
 Route::get('/', [ListingController::class, 'index'])->name('listing.index');
+Route::get('/new', [ListingController::class, 'create'])->name('listing.create');
+Route::post('/new', [ListingController::class, 'store'])->name('listing.store');
 Route::get('/{listing:slug}', [ListingController::class, 'show'])->name('listing.show');
 Route::get('/{listing:slug}/apply', [ListingController::class, 'apply'])->name('listing.apply');

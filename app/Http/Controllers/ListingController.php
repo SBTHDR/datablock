@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Listing;
 use App\Models\Tag;
+use App\Models\Listing;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class ListingController extends Controller
@@ -13,7 +14,7 @@ class ListingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $listings = Listing::where('is_active', true)
             ->with('tags')
@@ -21,6 +22,25 @@ class ListingController extends Controller
             ->get();
 
         $tags = Tag::orderBy('name')->get();
+
+        if ($request->has('search')) {
+          $query = strtolower($request->get('search'));
+          $listings = $listings->filter(function($listing) use($query) {
+            if (Str::contains(strtolower($listing->title), $query)) {
+                return true;
+            }
+
+            if (Str::contains(strtolower($listing->company), $query)) {
+                return true;
+            }
+
+            if (Str::contains(strtolower($listing->location), $query)) {
+                return true;
+            }
+
+            return false;
+          });
+        };
 
         return view('listings.index', compact('listings', 'tags'));
     }

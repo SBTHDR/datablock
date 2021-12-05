@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
+Route::get('/dashboard', function (\Illuminate\Http\Request $request) {
+    return view('dashboard', [
+        'listings' => $request->user()->listings
+    ]);
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
